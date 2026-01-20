@@ -20,7 +20,6 @@ model User {
   role Role @default(contestee)
   createdAt DateTime @default(now())
   contestsCreated Contest[]
-
   mcqSubmissions McqSubmission[]
   dsaSubmissions DsaSubmission[]
 
@@ -42,10 +41,6 @@ model Contest {
   creator User @relation(fields: [creatorId] , references: [id])
   mcqs        McqQuestion[]
   dsaProblems DsaProblem[]
-
-
-
-  
 }
 
 model McqQuestion{
