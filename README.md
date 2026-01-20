@@ -11,7 +11,7 @@ Built with **Bun + TypeScript + Prisma + Neon Postgres**.
 - Bun
 - TypeScript
 - Prisma ORM
-- Neon (Postgres)
+- PostgreSQL
 - JWT Auth
 - bcrypt
 - Zod
