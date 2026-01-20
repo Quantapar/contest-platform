@@ -1,15 +1,32 @@
-# contest-platform
+# Contest Platform Backend
 
-To install dependencies:
+A simple contest platform backend where **creators** can create contests (MCQs + DSA problems) and **contestees** can participate, submit answers, and view the leaderboard.
 
-```bash
-bun install
-```
+Built with **Bun + TypeScript + Prisma + Neon Postgres**.
 
-To run:
+---
 
-```bash
-bun run index.ts
-```
+## Tech Used
 
-This project was created using `bun init` in bun v1.3.5. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+- Bun
+- TypeScript
+- Prisma ORM
+- Neon (Postgres)
+- JWT Auth
+- bcrypt
+- Zod
+
+---
+
+## Endpoints
+
+- POST `/api/auth/signup`
+- POST `/api/auth/login`
+- POST `/api/contests` _(creator)_
+- GET `/api/contests/:contestId`
+- POST `/api/contests/:contestId/mcq` _(creator)_
+- POST `/api/contests/:contestId/mcq/:questionId/submit` _(contestee)_
+- POST `/api/contests/:contestId/dsa` _(creator)_
+- GET `/api/problems/:problemId`
+- POST `/api/problems/:problemId/submit` _(contestee)_
+- GET `/api/contests/:contestId/leaderboard`
