@@ -12,3 +12,112 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+model User {
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  password String
+  role Role @default(contestee)
+  createdAt DateTime @default(now())
+  contestsCreated Contest[]
+
+  mcqSubmissions McqSubmission[]
+  dsaSubmissions DsaSubmission[]
+
+}
+
+enum Role{
+  creator
+  contestee
+}
+
+model Contest {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+  createdAt DateTime @default(now())
+  creatorId Int
+  creator User @relation(fields: [creatorId] , references: [id])
+  mcqs        McqQuestion[]
+  dsaProblems DsaProblem[]
+
+
+
+  
+}
+
+model McqQuestion{
+  id Int @id @default(autoincrement())
+  contestId Int
+  questionText String
+  options Json
+  correctOptionIndex Int
+  points Int @default(1)
+  createdAt DateTime @default(now())
+  contest Contest @relation(fields: [contestId] , references: [id])
+  mcqs        McqSubmission[]
+}
+
+
+model DsaProblem{
+  id Int @id @default(autoincrement())
+  contestId Int
+  title String
+  description String
+  tags Json
+  points Int @default(100)
+  timeLimit Int @default(2000)
+  memoryLimit Int @default(256)
+  createdAt DateTime @default(now())
+
+  contest Contest @relation(fields: [contestId] , references: [id])
+
+  testCases    TestCase[]
+  submissions  DsaSubmission[]
+}
+
+
+model TestCase{
+  id Int @id @default(autoincrement())
+  problemId Int
+  input String
+  expectedOutput String
+  isHidden Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  problem DsaProblem @relation(fields: [problemId], references: [id])
+}
+
+model McqSubmission {
+  id Int @id @default(autoincrement())
+  userId Int
+  questionId Int
+  selectedOptionIndex Int
+  isCorrect Boolean
+  pointsEarned Int @default(0)
+  submittedAt DateTime @default(now())
+
+  user     User        @relation(fields: [userId], references: [id])
+  question McqQuestion @relation(fields: [questionId], references: [id])
+
+  @@unique([userId, questionId]) // using two constraints to allow one user for one submission using many - many relation
+
+}
+model DsaSubmission {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  problemId      Int
+  code           String
+  language       String
+  status         String
+  pointsEarned   Int      @default(0)
+  testCasesPassed Int     @default(0)
+  totalTestCases Int      @default(0)
+  executionTime  Int?
+  submittedAt    DateTime @default(now())
+
+  user    User       @relation(fields: [userId], references: [id])
+  problem DsaProblem @relation(fields: [problemId], references: [id])
+}
