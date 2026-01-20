@@ -2,7 +2,7 @@
 
 A simple contest platform backend where **creators** can create contests (MCQs + DSA problems) and **contestees** can participate, submit answers, and view the leaderboard.
 
-Built with **Bun + TypeScript + Prisma + Neon Postgres**.
+Built with **Bun + TypeScript + Prisma + PostgreSQL**.
 
 ---
 
