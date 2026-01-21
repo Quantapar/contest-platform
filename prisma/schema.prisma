@@ -45,10 +45,10 @@ model Contest {
 
 model McqQuestion{
   id Int @id @default(autoincrement())
-  contestId Int
+  contestId Int // can be better 
   questionText String
-  options Json
-  correctOptionIndex Int
+  options Json // can be better
+  correctOptionIndex Int // can be better
   points Int @default(1)
   createdAt DateTime @default(now())
   contest Contest @relation(fields: [contestId] , references: [id])
@@ -58,10 +58,10 @@ model McqQuestion{
 
 model DsaProblem{
   id Int @id @default(autoincrement())
-  contestId Int
+  contestId Int // 
   title String
   description String
-  tags Json
+  tags Json // 
   points Int @default(100)
   timeLimit Int @default(2000)
   memoryLimit Int @default(256)
