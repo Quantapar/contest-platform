@@ -107,6 +107,7 @@ model DsaSubmission {
   code           String
   language       String
   status         String
+  tokens         String[]
   pointsEarned   Int      @default(0)
   testCasesPassed Int     @default(0)
   totalTestCases Int      @default(0)
