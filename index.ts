@@ -3,6 +3,8 @@ const app = express();
 app.use(express.json());
 import { authRouter } from "./routes/authRouter";
 import { contestsRouter } from "./routes/contestsRouter";
+import { problemRouter } from "./routes/problemRouter";
 app.use("/api/auth", authRouter);
 app.use("/api/contests", contestsRouter);
+app.use("/api/problems", problemRouter);
 app.listen(3000);

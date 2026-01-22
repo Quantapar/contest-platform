@@ -151,6 +151,7 @@ contestsRouter.post("/:contestId/mcq", tokenValidation, async (req, res) => {
       });
     }
     const data = createMcqSchema.safeParse(req.body);
+
     if (!data.success) {
       return res.status(400).json({
         success: false,
@@ -170,6 +171,13 @@ contestsRouter.post("/:contestId/mcq", tokenValidation, async (req, res) => {
       });
     }
     const { questionText, options, correctOptionIndex, points } = data.data;
+    if (correctOptionIndex >= options.length) {
+      return res.status(400).json({
+        success: false,
+        data: null,
+        error: "INVALID_REQUEST",
+      });
+    }
 
     const mcq = await prisma.mcqQuestion.create({
       data: {
@@ -206,13 +214,22 @@ contestsRouter.post(
       const contestId = Number(req.params.contestId);
       const questionId = Number(req.params.questionId);
 
-      if (!contestId || !questionId) {
+      if (!contestId) {
+        return res.status(404).json({
+          success: false,
+          data: null,
+          error: "CONTEST_NOT_FOUND",
+        });
+      }
+
+      if (!questionId) {
         return res.status(404).json({
           success: false,
           data: null,
           error: "QUESTION_NOT_FOUND",
         });
       }
+
       const data = submitMcqSchema.safeParse(req.body);
       if (!data.success) {
         return res.status(400).json({
@@ -314,7 +331,7 @@ contestsRouter.post(
   },
 );
 
-// add dsa problem to contest - creator can do that
+// add dsa problem to contest - only creator can do that
 contestsRouter.post("/:contestId/dsa", tokenValidation, async (req, res) => {
   try {
     const role = req.role;
