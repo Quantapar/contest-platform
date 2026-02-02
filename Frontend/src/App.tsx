@@ -1,18 +1,17 @@
-import Navbar from "./components/Navbar";
+import { Navbar } from "./components/Navbar";
+import { LandingPage } from "./pages/LandingPage";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 function App() {
   return (
-    <>
-      <div className="min-h-screen w-full bg-[#020617] relative">
-        <div
-          className="absolute inset-0 z-0"
-          style={{
-            backgroundImage: `radial-gradient(circle 500px at 50% 200px, #3e3e3e, transparent)`,
-          }}
-        />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <div className="relative flex min-h-screen flex-col">
         <Navbar />
+        <main className="flex-1">
+          <LandingPage />
+        </main>
       </div>
-    </>
+    </ThemeProvider>
   );
 }
 
