@@ -38,14 +38,12 @@ export function LandingPage() {
             variants={staggerContainer}
             className="flex flex-col items-center text-center"
           >
-
-
             <motion.h1
               variants={fadeInUp}
               className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 text-balance"
             >
               Master the Art of <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/60">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-foreground to-foreground/60">
                 Competitive Programming
               </span>
             </motion.h1>
@@ -74,7 +72,6 @@ export function LandingPage() {
               </Button>
             </motion.div>
 
-
             <motion.div
               variants={fadeInUp}
               className="mt-16 pt-8 border-t border-border grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16"
@@ -99,12 +96,11 @@ export function LandingPage() {
         </div>
       </section>
 
-
       <section className="py-24 bg-muted/30 dark:bg-transparent">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform -rotate-2 group-hover:rotate-0 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-3xl transform -rotate-2 group-hover:rotate-0 transition-transform duration-500" />
               <div className="relative bg-background border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="h-12 w-12 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-6">
                   <Code2 className="h-6 w-6" />
@@ -130,7 +126,7 @@ export function LandingPage() {
             </div>
 
             <div className="relative group">
-              <div className="absolute inset-0 bg-gradient-to-bl from-orange-500/10 to-red-500/10 rounded-3xl transform rotate-2 group-hover:rotate-0 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-linear-to-bl from-orange-500/10 to-red-500/10 rounded-3xl transform rotate-2 group-hover:rotate-0 transition-transform duration-500" />
               <div className="relative bg-background border border-border p-8 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="h-12 w-12 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-xl flex items-center justify-center mb-6">
                   <Trophy className="h-6 w-6" />
@@ -158,7 +154,7 @@ export function LandingPage() {
         </div>
       </section>
 
-        <section className="py-24">
+      <section className="py-24">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Everything you need</h2>
@@ -289,13 +285,22 @@ export function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-border/50 text-sm text-muted-foreground">
             <p>&copy; 2026 CodeArena Inc. All rights reserved.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="https://x.com/quantapar" className="hover:text-foreground">
+              <a
+                href="https://x.com/quantapar"
+                className="hover:text-foreground"
+              >
                 Twitter
               </a>
-              <a href="https://github.com/quantapar" className="hover:text-foreground">
+              <a
+                href="https://github.com/quantapar"
+                className="hover:text-foreground"
+              >
                 GitHub
               </a>
-              <a href="https://discord.gg/quantapar" className="hover:text-foreground">
+              <a
+                href="https://discord.gg/quantapar"
+                className="hover:text-foreground"
+              >
                 Discord
               </a>
             </div>

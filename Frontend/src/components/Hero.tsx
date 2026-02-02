@@ -18,7 +18,7 @@ function Hero() {
         </p>
 
         <div className="mt-12 flex justify-center gap-4">
-          <button className="group relative rounded-full bg-slate-900 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/5 hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-white dark:text-black dark:hover:bg-zinc-200 transition-all flex items-center gap-2">
+          <button className="group relative rounded-full bg-slate-900 px-8 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/5 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 dark:bg-white dark:text-black dark:hover:bg-zinc-200 transition-all flex items-center gap-2">
             Start Competing
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
