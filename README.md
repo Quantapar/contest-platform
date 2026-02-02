@@ -6,7 +6,7 @@ This repository contains **both frontend and backend** code.
 
 ---
 
-## ✨ Features
+## Features
 
 - User authentication (JWT)
 - Role-based access (creator / contestant)
@@ -18,7 +18,7 @@ This repository contains **both frontend and backend** code.
 
 ---
 
-## 🧩 Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -40,7 +40,7 @@ This repository contains **both frontend and backend** code.
 
 ## 📁 Project Structure
 
-contest-platform/
-├── Backend/ # API, auth, database, business logic
-├── Frontend/ # React client
-└── README.md
+- contest-platform
+- ─ Backend/ API, auth, database, business logic
+- ─ Frontend/ React client
+- ─ README.md
