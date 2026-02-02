@@ -1,4 +1,4 @@
-# Contest Platform Backend
+# Cypher – Backend
 
 A simple contest platform backend where **creators** can create contests (MCQs + DSA problems) and **contestees** can participate, submit answers, and view the leaderboard.
 
