@@ -2,7 +2,7 @@ export type Judge0BatchItem = {
   token: string;
 };
 
-export type Judge0BatchResponse = Judge0BatchItem[]; // Judge0 batch submission returns an array of { token }
+export type Judge0BatchResponse = Judge0BatchItem[];
 
 export type Judge0SubmissionResult = {
   token: string;

@@ -3,8 +3,8 @@ import z from "zod";
 export const createContestsSchema = z.object({
   title: z.string(),
   description: z.string(),
-  startTime: z.iso.datetime(),
-  endTime: z.iso.datetime(),
+  startTime: z.string().datetime(),
+  endTime: z.string().datetime(),
 });
 
 export const createMcqSchema = z.object({

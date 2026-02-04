@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -12,108 +6,101 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
 model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
-  role Role @default(contestee)
-  createdAt DateTime @default(now())
+  id              Int             @id @default(autoincrement())
+  name            String
+  email           String          @unique
+  password        String
+  role            Role            @default(contestee)
+  createdAt       DateTime        @default(now())
   contestsCreated Contest[]
-  mcqSubmissions McqSubmission[]
-  dsaSubmissions DsaSubmission[]
-
-}
-
-enum Role{
-  creator
-  contestee
+  dsaSubmissions  DsaSubmission[]
+  mcqSubmissions  McqSubmission[]
 }
 
 model Contest {
-  id Int @id @default(autoincrement())
-  title String
+  id          Int           @id @default(autoincrement())
+  title       String
   description String
   startTime   DateTime
   endTime     DateTime
-  createdAt DateTime @default(now())
-  creatorId Int
-  creator User @relation(fields: [creatorId] , references: [id])
-  mcqs        McqQuestion[]
+  createdAt   DateTime      @default(now())
+  creatorId   Int
+  creator     User          @relation(fields: [creatorId], references: [id])
   dsaProblems DsaProblem[]
+  mcqs        McqQuestion[]
 }
 
-model McqQuestion{
-  id Int @id @default(autoincrement())
-  contestId Int // can be better 
-  questionText String
-  options Json // can be better
-  correctOptionIndex Int // can be better
-  points Int @default(1)
-  createdAt DateTime @default(now())
-  contest Contest @relation(fields: [contestId] , references: [id])
-  mcqs        McqSubmission[]
+model McqQuestion {
+  id                 Int             @id @default(autoincrement())
+  contestId          Int
+  questionText       String
+  options            Json
+  correctOptionIndex Int
+  points             Int             @default(1)
+  createdAt          DateTime        @default(now())
+  contest            Contest         @relation(fields: [contestId], references: [id])
+  mcqs               McqSubmission[]
 }
 
-
-model DsaProblem{
-  id Int @id @default(autoincrement())
-  contestId Int // 
-  title String
+model DsaProblem {
+  id          Int             @id @default(autoincrement())
+  contestId   Int
+  title       String
   description String
-  tags Json // 
-  points Int @default(100)
-  timeLimit Int @default(2000)
-  memoryLimit Int @default(256)
-  createdAt DateTime @default(now())
-
-  contest Contest @relation(fields: [contestId] , references: [id])
-
-  testCases    TestCase[]
-  submissions  DsaSubmission[]
+  tags        Json
+  points      Int             @default(100)
+  timeLimit   Int             @default(2000)
+  memoryLimit Int             @default(256)
+  createdAt   DateTime        @default(now())
+  contest     Contest         @relation(fields: [contestId], references: [id])
+  submissions DsaSubmission[]
+  testCases   TestCase[]
 }
 
-
-model TestCase{
-  id Int @id @default(autoincrement())
-  problemId Int
-  input String
+model TestCase {
+  id             Int        @id @default(autoincrement())
+  problemId      Int
+  input          String
   expectedOutput String
-  isHidden Boolean @default(false)
-  createdAt DateTime @default(now())
-
-  problem DsaProblem @relation(fields: [problemId], references: [id])
+  isHidden       Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  problem        DsaProblem @relation(fields: [problemId], references: [id])
 }
 
 model McqSubmission {
-  id Int @id @default(autoincrement())
-  userId Int
-  questionId Int
+  id                  Int         @id @default(autoincrement())
+  userId              Int
+  questionId          Int
   selectedOptionIndex Int
-  isCorrect Boolean
-  pointsEarned Int @default(0)
-  submittedAt DateTime @default(now())
+  isCorrect           Boolean
+  pointsEarned        Int         @default(0)
+  submittedAt         DateTime    @default(now())
+  question            McqQuestion @relation(fields: [questionId], references: [id])
+  user                User        @relation(fields: [userId], references: [id])
 
-  user     User        @relation(fields: [userId], references: [id])
-  question McqQuestion @relation(fields: [questionId], references: [id])
-
-  @@unique([userId, questionId]) // using two constraints to allow one user for one submission using many - many relation
-
+  @@unique([userId, questionId])
 }
-model DsaSubmission {
-  id             Int      @id @default(autoincrement())
-  userId         Int
-  problemId      Int
-  code           String
-  language       String
-  status         String
-  tokens         String[]
-  pointsEarned   Int      @default(0)
-  testCasesPassed Int     @default(0)
-  totalTestCases Int      @default(0)
-  executionTime  Int?
-  submittedAt    DateTime @default(now())
 
-  user    User       @relation(fields: [userId], references: [id])
-  problem DsaProblem @relation(fields: [problemId], references: [id])
+model DsaSubmission {
+  id              Int        @id @default(autoincrement())
+  userId          Int
+  problemId       Int
+  code            String
+  language        String
+  status          String
+  pointsEarned    Int        @default(0)
+  testCasesPassed Int        @default(0)
+  totalTestCases  Int        @default(0)
+  executionTime   Int?
+  submittedAt     DateTime   @default(now())
+  tokens          String[]
+  problem         DsaProblem @relation(fields: [problemId], references: [id])
+  user            User       @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  creator
+  contestee
 }

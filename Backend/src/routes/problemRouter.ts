@@ -6,7 +6,6 @@ import { submitDsaSchema } from "../validator/contestsValidator";
 import { languageList } from "../lib/judge0Setup";
 import type { Judge0PollResponse } from "../types/judge0Types";
 
-// to get dsa problem using it's id
 problemRouter.get("/:problemId", tokenValidation, async (req, res) => {
   try {
     const problemId = Number(req.params.problemId);
@@ -63,7 +62,6 @@ problemRouter.get("/:problemId", tokenValidation, async (req, res) => {
   }
 });
 
-// problem submit route- using judge0
 problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
   try {
     const problemId = Number(req.params.problemId);
@@ -101,42 +99,59 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
         .json({ success: false, data: null, error: "PROBLEM_NOT_FOUND" });
     }
 
-    if (problem.contest.creatorId === req.userId) {
-      return res
-        .status(403)
-        .json({ success: false, data: null, error: "FORBIDDEN" });
-    }
-
+    const isCreator = problem.contest.creatorId === req.userId;
     const now = new Date();
-    if (now < problem.contest.startTime || now > problem.contest.endTime) {
+    const isActive =
+      now >= problem.contest.startTime && now <= problem.contest.endTime;
+
+    if (!isCreator && !isActive) {
       return res
         .status(400)
         .json({ success: false, data: null, error: "CONTEST_NOT_ACTIVE" });
     }
 
-    const submissions = problem.testCases.map((tc) => ({
+    const allSubmissions = problem.testCases.map((tc) => ({
       language_id: languageId,
       source_code: code,
       stdin: tc.input,
+      expected_output: tc.expectedOutput,
     }));
 
-    const response = await fetch(
-      `${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false&wait=false`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ submissions }),
-      },
-    );
+    const batchSize = 20;
+    const tokens: string[] = [];
 
-    const judge0Result = await response.text();
-    if (!response.ok) {
-      throw new Error("Judge0 error");
+    for (let i = 0; i < allSubmissions.length; i += batchSize) {
+      const chunk = allSubmissions.slice(i, i + batchSize);
+
+      const response = await fetch(
+        `${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false&wait=false`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ submissions: chunk }),
+        },
+      );
+
+      const judge0Result = await response.text();
+      console.log(`Judge0 Chunk ${i / batchSize + 1} Response:`, judge0Result);
+
+      if (!response.ok) {
+        throw new Error(`Judge0 error (${response.status}): ${judge0Result}`);
+      }
+
+      let parsedResult;
+      try {
+        parsedResult = JSON.parse(judge0Result);
+      } catch (e) {
+        throw new Error("Invalid response from Judge0");
+      }
+
+      if (!Array.isArray(parsedResult)) {
+        throw new Error(`Judge0 returned unexpected format: ${judge0Result}`);
+      }
+
+      tokens.push(...parsedResult.map((t: any) => t.token));
     }
-
-    const tokens = (JSON.parse(judge0Result) as { token: string }[]).map(
-      (t) => t.token,
-    );
 
     const submission = await prisma.dsaSubmission.create({
       data: {
@@ -158,15 +173,16 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
       },
       error: null,
     });
-  } catch (err) {
-    console.error(err);
-    return res
-      .status(500)
-      .json({ success: false, data: null, error: "INTERNAL_SERVER_ERROR" });
+  } catch (err: any) {
+    console.error("Submission Error:", err);
+    return res.status(500).json({
+      success: false,
+      data: null,
+      error: err instanceof Error ? err.message : String(err) || "INTERNAL_SERVER_ERROR",
+    });
   }
 });
 
-// get request - to poll from judge0 with token
 problemRouter.get(
   "/submission/:submissionId",
   tokenValidation,
@@ -200,13 +216,24 @@ problemRouter.get(
       }
 
       const tokens = submission.tokens as string[];
+      const batchSize = 20;
+      const results: any[] = [];
 
-      const pollRes = await fetch(
-        `${process.env.JUDGE0_API}/submissions/batch?tokens=${tokens.join(",")}&base64_encoded=false`,
-      );
+      for (let i = 0; i < tokens.length; i += batchSize) {
+        const chunk = tokens.slice(i, i + batchSize);
+        const pollRes = await fetch(
+          `${process.env.JUDGE0_API}/submissions/batch?tokens=${chunk.join(",")}&base64_encoded=false`,
+        );
 
-      const pollData = (await pollRes.json()) as Judge0PollResponse;
-      const results = pollData.submissions;
+        if (!pollRes.ok) {
+          const errorBody = await pollRes.text();
+          console.error("Judge0 poll error:", pollRes.status, errorBody);
+          throw new Error(`Judge0 poll error (${pollRes.status}): ${errorBody}`);
+        }
+
+        const pollData = (await pollRes.json()) as Judge0PollResponse;
+        results.push(...pollData.submissions);
+      }
 
       const stillRunning = results.some(
         (r: any) => r.status.id === 1 || r.status.id === 2,
