@@ -301,7 +301,7 @@ export function ManageContestPage() {
                     </label>
                     <textarea
                       required
-                      className="w-full mt-1.5 bg-secondary/20 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary min-h-[100px]"
+                      className="w-full mt-1.5 bg-secondary/20 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary min-h-25"
                       value={mcqForm.questionText}
                       onChange={(e) =>
                         setMcqForm({ ...mcqForm, questionText: e.target.value })
@@ -391,7 +391,7 @@ export function ManageContestPage() {
                     </label>
                     <textarea
                       required
-                      className="w-full mt-1.5 bg-secondary/20 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary min-h-[150px]"
+                      className="w-full mt-1.5 bg-secondary/20 border border-border rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-primary min-h-37.5"
                       value={dsaForm.description}
                       onChange={(e) =>
                         setDsaForm({ ...dsaForm, description: e.target.value })

@@ -102,7 +102,7 @@ export function Dashboard() {
                 onClick={() =>
                   user?.role === "creator" && navigate("/contests/my")
                 }
-                className={`bg-secondary/30 rounded-xl p-4 text-center border border-border min-w-[120px] ${user?.role === "creator" ? "cursor-pointer hover:bg-secondary/50 transition-colors" : ""}`}
+                className={`bg-secondary/30 rounded-xl p-4 text-center border border-border min-w-30 ${user?.role === "creator" ? "cursor-pointer hover:bg-secondary/50 transition-colors" : ""}`}
               >
                 <div className="text-2xl font-bold">
                   {statsLoading ? (
@@ -117,7 +117,7 @@ export function Dashboard() {
                     : "Contests Participated"}
                 </div>
               </div>
-              <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border min-w-[120px]">
+              <div className="bg-secondary/30 rounded-xl p-4 text-center border border-border min-w-30">
                 <div className="text-2xl font-bold">
                   {statsLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin mx-auto" />
@@ -180,7 +180,7 @@ export function Dashboard() {
           {isCreator ? (
             <div
               onClick={() => navigate("/contests/create")}
-              className="group cursor-pointer bg-primary text-primary-foreground rounded-2xl p-6 shadow-lg shadow-primary/20 transition-all hover:translate-y-[-2px]"
+              className="group cursor-pointer bg-primary text-primary-foreground rounded-2xl p-6 shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
             >
               <div className="h-12 w-12 bg-white/10 rounded-xl flex items-center justify-center mb-4">
                 <PlusCircle className="h-6 w-6" />

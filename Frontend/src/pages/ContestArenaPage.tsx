@@ -3,9 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import Editor from "@monaco-editor/react";
 
-import {
-  Loader2,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface Problem {
   id: number;
@@ -236,23 +234,30 @@ export function ContestArenaPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <div className="h-14 border-b border-border bg-background px-6 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <Link to="/dashboard" className="font-bold tracking-tighter text-lg uppercase">
+          <Link
+            to="/dashboard"
+            className="font-bold tracking-tighter text-lg uppercase"
+          >
             CYPHER
           </Link>
-          <div className="h-4 w-[1px] bg-border mx-1" />
-          <h1 className="text-xs font-mono uppercase text-muted-foreground truncate max-w-[200px] tracking-widest">
+          <div className="h-4 w-px bg-border mx-1" />
+          <h1 className="text-xs font-mono uppercase text-muted-foreground truncate max-w-50 tracking-widest">
             {contest.title}
           </h1>
         </div>
 
         <div className="flex items-center gap-8 font-mono text-[10px] uppercase tracking-widest">
           <div className="flex flex-col items-end">
-             <span className="text-muted-foreground">Score</span>
-             <span className="font-bold text-foreground">{problems.reduce((sum, p) => sum + (p.pointsEarned || 0), 0)}</span>
+            <span className="text-muted-foreground">Score</span>
+            <span className="font-bold text-foreground">
+              {problems.reduce((sum, p) => sum + (p.pointsEarned || 0), 0)}
+            </span>
           </div>
           <div className="flex flex-col items-end">
-             <span className="text-muted-foreground">Progress</span>
-             <span className="font-bold text-foreground">{problems.filter(p => p.submitted).length} / {problems.length}</span>
+            <span className="text-muted-foreground">Progress</span>
+            <span className="font-bold text-foreground">
+              {problems.filter((p) => p.submitted).length} / {problems.length}
+            </span>
           </div>
         </div>
       </div>
@@ -277,14 +282,16 @@ export function ContestArenaPage() {
               >
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] uppercase tracking-widest font-mono opacity-70">
-                    PROBLEM {String(idx + 1).padStart(2, '0')}
+                    PROBLEM {String(idx + 1).padStart(2, "0")}
                   </span>
                   <span className="text-xs font-bold uppercase tracking-tight line-clamp-1">
                     {p.title}
                   </span>
                 </div>
                 {p.submitted && (
-                  <span className="text-[10px] font-mono border border-current px-1">✓</span>
+                  <span className="text-[10px] font-mono border border-current px-1">
+                    ✓
+                  </span>
                 )}
               </button>
             ))}
@@ -312,7 +319,9 @@ export function ContestArenaPage() {
                             : "border-border hover:border-foreground"
                         }`}
                       >
-                        <span className="font-mono text-sm uppercase">{option}</span>
+                        <span className="font-mono text-sm uppercase">
+                          {option}
+                        </span>
                         <div
                           className={`h-4 w-4 border flex items-center justify-center ${
                             selectedOption === idx
@@ -331,16 +340,26 @@ export function ContestArenaPage() {
                   <div className="pt-6">
                     {currentProblem.submitted && (
                       <div className="mb-4 p-4 border border-border bg-muted/50 text-xs font-mono uppercase">
-                        {currentProblem.pointsEarned ? "PASSED" : "FAILED"} — {currentProblem.pointsEarned || 0}/{currentProblem.points} PTS
+                        {currentProblem.pointsEarned ? "PASSED" : "FAILED"} —{" "}
+                        {currentProblem.pointsEarned || 0}/
+                        {currentProblem.points} PTS
                       </div>
                     )}
                     <Button
                       variant="outline"
                       className="w-full h-12 rounded-none border-foreground hover:bg-foreground hover:text-background transition-colors uppercase text-xs font-bold tracking-[0.2em]"
                       onClick={handleMcqSubmit}
-                      disabled={selectedOption === null || submitting || currentProblem.submitted}
+                      disabled={
+                        selectedOption === null ||
+                        submitting ||
+                        currentProblem.submitted
+                      }
                     >
-                      {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Selection"}
+                      {submitting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Confirm Selection"
+                      )}
                     </Button>
                   </div>
                 </div>
@@ -369,7 +388,7 @@ export function ContestArenaPage() {
                       </select>
                     </div>
 
-                    <div className="h-[450px] border border-border bg-[#1e1e1e]">
+                    <div className="h-112.5 border border-border bg-[#1e1e1e]">
                       <Editor
                         key={`${currentProblem.id}-${language}`}
                         height="100%"
@@ -380,7 +399,8 @@ export function ContestArenaPage() {
                         options={{
                           minimap: { enabled: false },
                           fontSize: 13,
-                          fontFamily: 'ia-writer-mono, JetBrains Mono, monospace',
+                          fontFamily:
+                            "ia-writer-mono, JetBrains Mono, monospace",
                           padding: { top: 20 },
                           scrollBeyondLastLine: false,
                           automaticLayout: true,
@@ -394,7 +414,9 @@ export function ContestArenaPage() {
                         <div className="w-full max-w-sm border border-border p-8 bg-background">
                           <div className="space-y-6">
                             <div className="space-y-2">
-                              <h2 className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Result</h2>
+                              <h2 className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                                Result
+                              </h2>
                               <p className="text-xl font-bold tracking-tight uppercase">
                                 {submissionResult.status.replace(/_/g, " ")}
                               </p>
@@ -403,16 +425,22 @@ export function ContestArenaPage() {
                             <div className="py-4 border-y border-border space-y-4">
                               <div className="flex justify-between items-center text-[10px] font-mono uppercase">
                                 <span>Test Cases</span>
-                                <span>{submissionResult.testCasesPassed} / {submissionResult.totalTestCases}</span>
+                                <span>
+                                  {submissionResult.testCasesPassed} /{" "}
+                                  {submissionResult.totalTestCases}
+                                </span>
                               </div>
                               <div className="flex justify-between items-center text-[10px] font-mono uppercase">
                                 <span>Points</span>
-                                <span>{submissionResult.pointsEarned || 0} / {currentProblem?.points}</span>
+                                <span>
+                                  {submissionResult.pointsEarned || 0} /{" "}
+                                  {currentProblem?.points}
+                                </span>
                               </div>
                             </div>
 
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               className="w-full h-10 border-foreground hover:bg-foreground hover:text-background text-xs font-bold uppercase transition-all"
                               onClick={() => setSubmissionResult(null)}
                             >
@@ -429,7 +457,11 @@ export function ContestArenaPage() {
                       onClick={handleDsaSubmit}
                       disabled={!currentCode.trim() || submitting}
                     >
-                      {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Run Tests"}
+                      {submitting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Run Tests"
+                      )}
                     </Button>
                   </div>
                 </div>
