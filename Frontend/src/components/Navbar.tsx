@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { ThemeToggle } from "./ThemeToggle";
 import { Code2, Menu, X } from "lucide-react";
 import { Button } from "./ui/Button";
+import { useAuth } from "../context/AuthContext";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,11 +19,15 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "Contests", href: "#contests" },
-    { name: "Problems", href: "#problems" },
-    { name: "Leaderboard", href: "#leaderboard" },
-  ];
+  const navLinks = user
+    ? [
+        { name: "Dashboard", href: "/dashboard" },
+        { name: "Contests", href: "/contests" },
+        ...(user.role === "creator"
+          ? [{ name: "My Contests", href: "/contests/my" }]
+          : []),
+      ]
+    : [{ name: "Explore", href: "/contests" }];
 
   return (
     <nav
@@ -31,34 +38,64 @@ export function Navbar() {
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <div
+        <Link
+          to="/"
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => window.location.reload()}
         >
           <div className="bg-primary text-primary-foreground p-1.5 rounded-lg">
             <Code2 className="h-5 w-5" />
           </div>
           <span className="font-bold text-xl tracking-tight">CYPHER</span>
-        </div>
+        </Link>
 
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.href}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
 
         <div className="hidden md:flex items-center gap-4">
           <ThemeToggle />
-          <Button variant="ghost" size="sm">
-            Log in
-          </Button>
-          <Button size="sm">Sign up</Button>
+          {user ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 hover:bg-muted/50 p-1 rounded-full transition-colors"
+              >
+                <div className="bg-primary/10 text-primary rounded-full p-2 h-8 w-8 flex items-center justify-center font-bold">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex flex-col pr-2">
+                  <span className="text-sm font-medium leading-none">
+                    {user.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {user.role}
+                  </span>
+                </div>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={logout}>
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">
+                  Log in
+                </Button>
+              </Link>
+              <Link to="/signup">
+                <Button size="sm">Sign up</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="md:hidden flex items-center gap-4">
@@ -79,20 +116,44 @@ export function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-6 flex flex-col gap-4 animate-in slide-in-from-top-2">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.name}
-              href={link.href}
+              to={link.href}
               className="text-lg font-medium text-foreground py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
           <div className="h-px bg-border my-2" />
-          <Button variant="outline" className="w-full justify-center">
-            Log in
-          </Button>
-          <Button className="w-full justify-center">Sign up</Button>
+          {user ? (
+            <Button
+              variant="outline"
+              className="w-full justify-center"
+              onClick={logout}
+            >
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full"
+              >
+                <Button variant="outline" className="w-full justify-center">
+                  Log in
+                </Button>
+              </Link>
+              <Link
+                to="/signup"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full"
+              >
+                <Button className="w-full justify-center">Sign up</Button>
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

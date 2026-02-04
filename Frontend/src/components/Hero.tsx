@@ -14,7 +14,7 @@ function Hero() {
         <p className="mx-auto max-w-2xl text-xl leading-relaxed tracking-tight text-slate-700 dark:text-zinc-400 mt-8">
           A modern platform for developers to compete, learn, and grow.{" "}
           <br className="hidden sm:inline" />
-          Host contests, solve problems, and climb the global leaderboard.
+          Host contests, solve problems, and prove your skills.
         </p>
 
         <div className="mt-12 flex justify-center gap-4">
