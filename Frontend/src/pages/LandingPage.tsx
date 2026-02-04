@@ -214,14 +214,14 @@ export function LandingPage() {
           <div className="flex justify-between items-center pt-8 border-t border-border text-[10px] uppercase font-mono text-muted-foreground">
             <p>&copy; 2026 CYPHER. VER 1.0.0</p>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-foreground">
+              <a href="https://x.com/quantapar" className="hover:text-foreground">
                 X
               </a>
-              <a href="#" className="hover:text-foreground">
-                GH
+              <a href="https://github.com/quantapar" className="hover:text-foreground">
+                GitHub
               </a>
-              <a href="#" className="hover:text-foreground">
-                DC
+              <a href="https://discord.gg/quantapar" className="hover:text-foreground">
+                Discord
               </a>
             </div>
           </div>
