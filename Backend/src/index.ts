@@ -4,14 +4,18 @@ import cors from "cors";
 
 const app = express();
 
-const FRONTEND_ORIGIN =
-  process.env.FRONTEND_ORIGIN || "https://contest-platform-1-jlwp.onrender.com";
+const FRONTEND_ORIGINS =
+  (process.env.FRONTEND_ORIGINS && process.env.FRONTEND_ORIGINS.split(",")) ||
+  (process.env.FRONTEND_ORIGIN
+    ? [process.env.FRONTEND_ORIGIN]
+    : ["https://contest-platform-1-jlwp.onrender.com"]);
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (origin === FRONTEND_ORIGIN) return callback(null, true);
+      if (FRONTEND_ORIGINS.includes(origin)) return callback(null, true);
+      console.warn(`CORS origin rejected: ${origin}`);
       return callback(new Error("CORS_NOT_ALLOWED"));
     },
     methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
