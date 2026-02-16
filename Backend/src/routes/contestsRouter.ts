@@ -173,6 +173,13 @@ contestsRouter.get("/:contestId", tokenValidation, async (req, res) => {
             points: true,
             timeLimit: true,
             memoryLimit: true,
+            testCases: {
+              where: { isHidden: false },
+              select: {
+                input: true,
+                expectedOutput: true,
+              },
+            },
           },
         },
       },

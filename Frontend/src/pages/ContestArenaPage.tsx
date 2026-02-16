@@ -372,6 +372,43 @@ export function ContestArenaPage() {
                     </p>
                   </div>
 
+                  {/* Sample Test Cases */}
+                  {currentProblem?.data.testCases &&
+                    currentProblem.data.testCases.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-xs font-mono uppercase tracking-[0.2em] font-bold">
+                          Sample Test Cases
+                        </h3>
+                        <div className="grid grid-cols-1 gap-4">
+                          {currentProblem.data.testCases.map(
+                            (tc: any, idx: number) => (
+                              <div
+                                key={idx}
+                                className="bg-muted/30 border border-border rounded-lg p-4 font-mono text-xs space-y-3"
+                              >
+                                <div>
+                                  <span className="text-muted-foreground/70 uppercase text-[10px] tracking-wider block mb-1.5">
+                                    Input
+                                  </span>
+                                  <div className="bg-background/50 border border-border/50 p-3 rounded-md overflow-x-auto text-foreground/90">
+                                    <pre>{tc.input}</pre>
+                                  </div>
+                                </div>
+                                <div>
+                                  <span className="text-muted-foreground/70 uppercase text-[10px] tracking-wider block mb-1.5">
+                                    Expected Output
+                                  </span>
+                                  <div className="bg-background/50 border border-border/50 p-3 rounded-md overflow-x-auto text-foreground/90">
+                                    <pre>{tc.expectedOutput}</pre>
+                                  </div>
+                                </div>
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                   <div className="space-y-4">
                     <div className="flex items-center justify-between border-b border-border pb-4">
                       <h3 className="text-xs font-mono uppercase tracking-[0.2em] font-bold">
