@@ -15,6 +15,18 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       if (FRONTEND_ORIGINS.includes(origin)) return callback(null, true);
+      // allow vercel preview domains (e.g. contest-platform-inky.vercel.app)
+      try {
+        const url = new URL(origin);
+        const host = url.hostname;
+        if (host.endsWith(".vercel.app")) return callback(null, true);
+
+        if (host.endsWith(".onrender.com")) return callback(null, true);
+
+        if (host === "localhost" || host.endsWith(".localhost"))
+          return callback(null, true);
+      } catch (e) {}
+
       console.warn(`CORS origin rejected: ${origin}`);
       return callback(new Error("CORS_NOT_ALLOWED"));
     },
