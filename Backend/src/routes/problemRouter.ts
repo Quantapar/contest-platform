@@ -114,7 +114,7 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
       language_id: languageId,
       source_code: code,
       stdin: tc.input,
-      expected_output: tc.expectedOutput,
+      expected_output: tc.expectedOutput.trim() + "\n",
     }));
 
     const batchSize = 20;
