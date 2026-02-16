@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
 import { Button } from "../components/ui/Button";
-import {
-  Settings,
-  Plus,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { Settings, Plus, Loader2, AlertCircle } from "lucide-react";
 
 interface Contest {
   id: number;
@@ -36,7 +32,7 @@ export function MyContests() {
   useEffect(() => {
     const fetchMyContests = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/contests/my", {
+        const response = await fetch(`${API_BASE_URL}/api/contests/my`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -98,9 +94,13 @@ export function MyContests() {
     >
       <div className="flex justify-between items-start mb-4">
         <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-          {status === 'live' ? 'LIVE NOW' : status === 'upcoming' ? 'SCHEDULED' : 'ARCHIVED'}
+          {status === "live"
+            ? "LIVE NOW"
+            : status === "upcoming"
+              ? "SCHEDULED"
+              : "ARCHIVED"}
         </div>
-        
+
         <div className="flex gap-2">
           {status === "live" && (
             <span className="h-2 w-2 rounded-full bg-foreground animate-pulse" />
@@ -141,7 +141,7 @@ export function MyContests() {
             {new Date(contest.startTime).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-              hour12: false
+              hour12: false,
             })}
           </span>
         </div>

@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Loader2,
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
 
 export function CreateContest() {
   const { user, isLoading: authLoading } = useAuth();
@@ -96,7 +97,7 @@ export function CreateContest() {
       const startDateTime = new Date(`${startDate}T${startTime}`).toISOString();
       const endDateTime = new Date(`${endDate}T${endTime}`).toISOString();
 
-      const response = await fetch("http://localhost:3000/api/contests", {
+      const response = await fetch(`${API_BASE_URL}/api/contests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,6 +10,7 @@ import {
   Code2,
   Loader2,
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
 
 export function ManageContestPage() {
   const { contestId } = useParams();
@@ -37,12 +38,9 @@ export function ManageContestPage() {
 
   const fetchContest = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        },
-      );
+      const res = await fetch(`${API_BASE_URL}/api/contests/${contestId}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       const data = await res.json();
       if (data.success) {
         setContest(data.data);
@@ -61,17 +59,14 @@ export function ManageContestPage() {
   const handleCreateMcq = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}/mcq`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(mcqForm),
+      const res = await fetch(`${API_BASE_URL}/api/contests/${contestId}/mcq`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+        body: JSON.stringify(mcqForm),
+      });
       const data = await res.json();
       if (data.success) {
         alert("MCQ added successfully!");
@@ -97,20 +92,17 @@ export function ManageContestPage() {
         .split(",")
         .map((t) => t.trim())
         .filter((t) => t);
-      const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}/dsa`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
-            ...dsaForm,
-            tags: tagsArray,
-          }),
+      const res = await fetch(`${API_BASE_URL}/api/contests/${contestId}/dsa`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      );
+        body: JSON.stringify({
+          ...dsaForm,
+          tags: tagsArray,
+        }),
+      });
       const data = await res.json();
       if (data.success) {
         alert("DSA Problem added successfully!");
@@ -141,7 +133,7 @@ export function ManageContestPage() {
       return;
     try {
       const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}/mcq/${mcqId}`,
+        `${API_BASE_URL}/api/contests/${contestId}/mcq/${mcqId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -164,7 +156,7 @@ export function ManageContestPage() {
       return;
     try {
       const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}/dsa/${dsaId}`,
+        `${API_BASE_URL}/api/contests/${contestId}/dsa/${dsaId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

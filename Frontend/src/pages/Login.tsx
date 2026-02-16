@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
 
 export function Login() {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ export function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

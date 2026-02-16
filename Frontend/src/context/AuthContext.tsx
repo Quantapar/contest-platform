@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 interface User {
   id: number;
@@ -34,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = localStorage.getItem("token");
       if (token) {
         try {
-          const res = await fetch("http://localhost:3000/api/auth/me", {
+          const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

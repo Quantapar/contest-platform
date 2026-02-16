@@ -12,6 +12,7 @@ import {
   BookOpen,
   Loader2,
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
 
 export function Dashboard() {
   const { user, isLoading, logout } = useAuth();
@@ -22,7 +23,7 @@ export function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/auth/stats", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/stats`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

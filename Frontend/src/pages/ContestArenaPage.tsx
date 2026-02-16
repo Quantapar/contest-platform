@@ -4,6 +4,7 @@ import { Button } from "../components/ui/Button";
 import Editor from "@monaco-editor/react";
 
 import { Loader2 } from "lucide-react";
+import { API_BASE_URL } from "../config";
 
 interface Problem {
   id: number;
@@ -61,7 +62,7 @@ export function ContestArenaPage() {
     const fetchArenaData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/contests/${contestId}`,
+          `${API_BASE_URL}/api/contests/${contestId}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -114,7 +115,7 @@ export function ContestArenaPage() {
     try {
       if (!currentProblem) return;
       const res = await fetch(
-        `http://localhost:3000/api/contests/${contestId}/mcq/${currentProblem.id}/submit`,
+        `${API_BASE_URL}/api/contests/${contestId}/mcq/${currentProblem.id}/submit`,
         {
           method: "POST",
           headers: {
@@ -154,7 +155,7 @@ export function ContestArenaPage() {
     setSubmissionResult(null);
     try {
       const res = await fetch(
-        `http://localhost:3000/api/problems/${currentProblem.id}/submit`,
+        `${API_BASE_URL}/api/problems/${currentProblem.id}/submit`,
         {
           method: "POST",
           headers: {
@@ -180,7 +181,7 @@ export function ContestArenaPage() {
   const pollSubmission = async (submissionId: number) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/problems/submission/${submissionId}`,
+        `${API_BASE_URL}/api/problems/submission/${submissionId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

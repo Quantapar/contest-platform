@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
 import { Button } from "../components/ui/Button";
-import {
-  Plus,
-  Loader2,
-  AlertCircle,
-} from "lucide-react";
+import { Plus, Loader2, AlertCircle } from "lucide-react";
 
 interface Contest {
   id: number;
@@ -35,7 +32,7 @@ export function ContestsPage() {
   useEffect(() => {
     const fetchContests = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/contests", {
+        const response = await fetch(`${API_BASE_URL}/api/contests`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -97,9 +94,13 @@ export function ContestsPage() {
     >
       <div className="flex justify-between items-start mb-4">
         <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-          {status === 'live' ? 'LIVE NOW' : status === 'upcoming' ? 'SCHEDULED' : 'ARCHIVED'}
+          {status === "live"
+            ? "LIVE NOW"
+            : status === "upcoming"
+              ? "SCHEDULED"
+              : "ARCHIVED"}
         </div>
-        
+
         <div className="flex gap-2">
           {status === "live" && (
             <span className="h-2 w-2 rounded-full bg-foreground animate-pulse" />
@@ -131,7 +132,7 @@ export function ContestsPage() {
             {new Date(contest.startTime).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-              hour12: false
+              hour12: false,
             })}
           </span>
         </div>
@@ -150,7 +151,11 @@ export function ContestsPage() {
             navigate(`/contests/${contest.id}`);
           }}
         >
-          {status === "live" ? "Join" : status === "upcoming" ? "Details" : "Review"}
+          {status === "live"
+            ? "Join"
+            : status === "upcoming"
+              ? "Details"
+              : "Review"}
         </Button>
       </div>
     </div>
@@ -168,7 +173,9 @@ export function ContestsPage() {
             >
               Dashboard
             </Button>
-            <h1 className="text-3xl font-bold tracking-tighter uppercase mb-2">Contests</h1>
+            <h1 className="text-3xl font-bold tracking-tighter uppercase mb-2">
+              Contests
+            </h1>
             <p className="text-xs font-mono uppercase text-muted-foreground tracking-widest">
               Global Arena
             </p>

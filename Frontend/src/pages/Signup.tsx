@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
 
 export function Signup() {
   const [searchParams] = useSearchParams();
@@ -24,7 +25,7 @@ export function Signup() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
