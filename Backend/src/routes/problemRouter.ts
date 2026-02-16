@@ -112,9 +112,11 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
 
     const allSubmissions = problem.testCases.map((tc) => ({
       language_id: languageId,
-      source_code: code,
-      stdin: tc.input,
-      expected_output: tc.expectedOutput.trim() + "\n",
+      source_code: Buffer.from(code).toString("base64"),
+      stdin: Buffer.from(tc.input).toString("base64"),
+      expected_output: Buffer.from(tc.expectedOutput.trim() + "\n").toString(
+        "base64",
+      ),
     }));
 
     const batchSize = 20;
@@ -124,7 +126,7 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
       const chunk = allSubmissions.slice(i, i + batchSize);
 
       const response = await fetch(
-        `${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false&wait=false`,
+        `${process.env.JUDGE0_API}/submissions/batch?base64_encoded=true&wait=false`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -178,7 +180,8 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
     return res.status(500).json({
       success: false,
       data: null,
-      error: err instanceof Error ? err.message : String(err) || "INTERNAL_SERVER_ERROR",
+      error:
+        err instanceof Error ? err.message : String(err) || "INTERNAL_SERVER_ERROR",
     });
   }
 });
@@ -222,7 +225,7 @@ problemRouter.get(
       for (let i = 0; i < tokens.length; i += batchSize) {
         const chunk = tokens.slice(i, i + batchSize);
         const pollRes = await fetch(
-          `${process.env.JUDGE0_API}/submissions/batch?tokens=${chunk.join(",")}&base64_encoded=false`,
+          `${process.env.JUDGE0_API}/submissions/batch?tokens=${chunk.join(",")}&base64_encoded=true&fields=token,stdout,expected_output,status`,
         );
 
         if (!pollRes.ok) {
@@ -249,6 +252,21 @@ problemRouter.get(
 
       const total = results.length;
       const passed = results.filter((r: any) => r.status.id === 3).length;
+
+      // Debug logging for failures
+      results.forEach((r: any) => {
+        if (r.status.id === 4) { // Wrong Answer
+          try {
+            const stdout = r.stdout ? Buffer.from(r.stdout, 'base64').toString() : "(null)";
+            const expected = r.expected_output ? Buffer.from(r.expected_output, 'base64').toString() : "(null)";
+            console.log(`[DEBUG] WA Detail - Token: ${r.token}`);
+            console.log(`Expected (len=${expected.length}): ${JSON.stringify(expected)}`);
+            console.log(`Actual   (len=${stdout.length}): ${JSON.stringify(stdout)}`);
+          } catch (e) {
+            console.error("Error decoding debug info", e);
+          }
+        }
+      });
 
       let status = "wrong_answer";
       if (results.some((r: any) => r.status.id === 6)) {
