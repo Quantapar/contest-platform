@@ -4,7 +4,22 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+const FRONTEND_ORIGIN =
+  process.env.FRONTEND_ORIGIN || "https://contest-platform-1-jlwp.onrender.com";
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (origin === FRONTEND_ORIGIN) return callback(null, true);
+      return callback(new Error("CORS_NOT_ALLOWED"));
+    },
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
 
 import { authRouter } from "./routes/authRouter";
