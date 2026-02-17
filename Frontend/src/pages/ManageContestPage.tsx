@@ -45,8 +45,8 @@ export function ManageContestPage() {
       if (data.success) {
         setContest(data.data);
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // ignore
     } finally {
       setLoading(false);
     }
@@ -80,7 +80,7 @@ export function ManageContestPage() {
       } else {
         alert(data.error);
       }
-    } catch (err) {
+    } catch {
       alert("Error adding MCQ");
     }
   };
@@ -119,7 +119,7 @@ export function ManageContestPage() {
       } else {
         alert(data.error);
       }
-    } catch (err) {
+    } catch {
       alert("Error adding DSA problem");
     }
   };
@@ -142,7 +142,7 @@ export function ManageContestPage() {
       if ((await res.json()).success) {
         fetchContest();
       }
-    } catch (err) {
+    } catch {
       alert("Error deleting MCQ");
     }
   };
@@ -165,7 +165,7 @@ export function ManageContestPage() {
       if ((await res.json()).success) {
         fetchContest();
       }
-    } catch (err) {
+    } catch {
       alert("Error deleting problem");
     }
   };

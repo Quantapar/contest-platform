@@ -1,0 +1,58 @@
+
+> frontend@0.0.0 lint
+> eslint .
+
+
+/Users/manu/Projects/contest-platform/Frontend/src/components/ThemeProvider.tsx
+  59:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/manu/Projects/contest-platform/Frontend/src/components/ui/Button.tsx
+  16:7  error  'asChild' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/manu/Projects/contest-platform/Frontend/src/context/AuthContext.tsx
+  50:18  error  'error' is defined but never used                                                                                               @typescript-eslint/no-unused-vars
+  80:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/ContestArenaPage.tsx
+   14:9   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   29:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   40:60  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   76:47  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   86:54  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  100:16  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  145:14  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  175:14  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  215:14  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  384:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/ContestDetailsPage.tsx
+   15:9   error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   16:16  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   45:16  error  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  183:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  207:49  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/ContestsPage.tsx
+  46:16  error  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/CreateContest.tsx
+   46:6   warning  React Hook useEffect has a missing dependency: 'endDate'. Either include it or remove the dependency array                                                                                   react-hooks/exhaustive-deps
+  121:14  error    'err' is defined but never used                                                                                                                                                              @typescript-eslint/no-unused-vars
+  146:3   error    React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  153:6   warning  React Hook useEffect has a missing dependency: 'validateTimeline'. Either include it or remove the dependency array                                                                          react-hooks/exhaustive-deps
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/ManageContestPage.tsx
+   18:42  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+   57:6   warning  React Hook useEffect has a missing dependency: 'fetchContest'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   83:14  error    'err' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  122:14  error    'err' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  145:14  error    'err' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  168:14  error    'err' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  209:41  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+  232:48  error    Unexpected any. Specify a different type                                                                         @typescript-eslint/no-explicit-any
+
+/Users/manu/Projects/contest-platform/Frontend/src/pages/MyContests.tsx
+  46:16  error  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 33 problems (30 errors, 3 warnings)
+

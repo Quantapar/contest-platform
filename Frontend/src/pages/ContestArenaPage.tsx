@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import Editor from "@monaco-editor/react";
@@ -97,7 +98,7 @@ export function ContestArenaPage() {
         } else {
           setError(data.error || "Contest not found");
         }
-      } catch (err) {
+      } catch {
         setError("Network error. Please try again later.");
       } finally {
         setLoading(false);
@@ -127,11 +128,11 @@ export function ContestArenaPage() {
       );
       const data = await res.json();
       if (data.success) {
-        alert(
-          data.data.isCorrect
-            ? `Correct! You earned ${currentProblem.points} points.`
-            : "Incorrect answer.",
-        );
+        if (data.data.isCorrect) {
+            toast.success(`Correct! +${currentProblem.points} points`);
+        } else {
+            toast.error("Incorrect answer");
+        }
         const updatedProblems = [...problems];
         updatedProblems[currentProblemIdx].submitted = true;
         if (data.data.isCorrect) {
@@ -140,10 +141,10 @@ export function ContestArenaPage() {
         }
         setProblems(updatedProblems);
       } else {
-        alert(data.error || "Submission failed");
+        toast.error(data.error || "Submission failed");
       }
-    } catch (err) {
-      alert("Submission error");
+    } catch {
+      toast.error("Submission error");
     } finally {
       setSubmitting(false);
     }
@@ -169,11 +170,11 @@ export function ContestArenaPage() {
       if (data.success) {
         pollSubmission(data.data.submissionId);
       } else {
-        alert(data.error || "Submission failed");
+        toast.error(data.error || "Submission failed");
         setSubmitting(false);
       }
-    } catch (err) {
-      alert("Submission error");
+    } catch {
+      toast.error("Submission error");
       setSubmitting(false);
     }
   };
@@ -205,16 +206,16 @@ export function ContestArenaPage() {
           data.data.pointsEarned || 0;
         setProblems(updatedProblems);
         if (data.data.status === "accepted") {
-          alert(
-            `Success! All test cases passed. You earned ${data.data.pointsEarned} points.`,
+          toast.success(
+            `Success! All test cases passed. +${data.data.pointsEarned} points.`,
           );
         }
       } else {
         setTimeout(() => pollSubmission(submissionId), 2000);
       }
-    } catch (err) {
+    } catch {
       setSubmitting(false);
-      alert("Error polling submission");
+      toast.error("Error polling submission");
     }
   };
 

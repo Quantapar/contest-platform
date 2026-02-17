@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
@@ -27,14 +28,14 @@ export function Login() {
       const data = await response.json();
 
       if (data.success) {
-        alert("Login successful!");
+        toast.success("Login successful!", { duration: 2000 });
         login(data.data.token, data.data);
       } else {
-        alert(data.error || "Login failed");
+        toast.error(data.error || "Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }

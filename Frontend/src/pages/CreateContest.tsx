@@ -30,6 +30,42 @@ export function CreateContest() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const validateTimeline = () => {
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+    const now = new Date();
+
+    if (start.getFullYear() > 2099 || end.getFullYear() > 2099) {
+      return "Year cannot exceed 2099.";
+    }
+
+    if (start <= now) {
+      return "Start time must be in the future.";
+    }
+    if (end <= start) {
+      return "End time must be after the start time.";
+    }
+    return null;
+  };
+
+  const getDuration = () => {
+    if (!startDate || !startTime || !endDate || !endTime) return null;
+    const start = new Date(`${startDate}T${startTime}`);
+    const end = new Date(`${endDate}T${endTime}`);
+
+    if (start.getFullYear() > 2099 || end.getFullYear() > 2099)
+      return "Invalid Year";
+
+    const diff = end.getTime() - start.getTime();
+    if (diff <= 0) return "Invalid Range";
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
+  };
+
+  const durationText = getDuration();
+
   useEffect(() => {
     if (startDate && startTime) {
       if (!endDate) setEndDate(startDate);
@@ -55,23 +91,14 @@ export function CreateContest() {
     }
   }, [user, authLoading, navigate]);
 
-  const validateTimeline = () => {
-    const start = new Date(`${startDate}T${startTime}`);
-    const end = new Date(`${endDate}T${endTime}`);
-    const now = new Date();
-
-    if (start.getFullYear() > 2099 || end.getFullYear() > 2099) {
-      return "Year cannot exceed 2099.";
+  useEffect(() => {
+    const error = validateTimeline();
+    if (error && (startDate || endDate)) {
+      setError(error);
+    } else {
+      setError(null);
     }
-
-    if (start <= now) {
-      return "Start time must be in the future.";
-    }
-    if (end <= start) {
-      return "End time must be after the start time.";
-    }
-    return null;
-  };
+  }, [startDate, startTime, endDate, endTime]);
 
   if (authLoading || !user || user.role !== "creator") {
     return (
@@ -119,38 +146,16 @@ export function CreateContest() {
         setError(data.error || "Failed to create contest");
       }
     } catch (err) {
+      console.error(err);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getDuration = () => {
-    if (!startDate || !startTime || !endDate || !endTime) return null;
-    const start = new Date(`${startDate}T${startTime}`);
-    const end = new Date(`${endDate}T${endTime}`);
 
-    if (start.getFullYear() > 2099 || end.getFullYear() > 2099)
-      return "Invalid Year";
 
-    const diff = end.getTime() - start.getTime();
-    if (diff <= 0) return "Invalid Range";
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    return `${hours}h ${minutes}m`;
-  };
-
-  const durationText = getDuration();
-
-  useEffect(() => {
-    const error = validateTimeline();
-    if (error && (startDate || endDate)) {
-      setError(error);
-    } else {
-      setError(null);
-    }
-  }, [startDate, startTime, endDate, endTime]);
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-12 px-6">

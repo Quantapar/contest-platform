@@ -43,7 +43,7 @@ export function MyContests() {
         } else {
           setError(data.error || "Failed to fetch your contests");
         }
-      } catch (err) {
+      } catch {
         setError("Network error. Please try again later.");
       } finally {
         setLoading(false);

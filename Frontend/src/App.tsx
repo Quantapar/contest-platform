@@ -12,6 +12,10 @@ import { MyContests } from "./pages/MyContests";
 import { ContestDetailsPage } from "./pages/ContestDetailsPage";
 import { ContestArenaPage } from "./pages/ContestArenaPage";
 import { ManageContestPage } from "./pages/ManageContestPage";
+import { NotFound } from "./pages/NotFound";
+
+
+import { Toaster } from "sonner";
 
 function Layout() {
   return (
@@ -20,6 +24,7 @@ function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
+      <Toaster position="top-center" richColors />
     </div>
   );
 }
@@ -51,6 +56,7 @@ function App() {
             />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
