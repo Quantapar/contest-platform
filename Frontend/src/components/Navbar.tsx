@@ -12,10 +12,17 @@ export function Navbar() {
   const { user, logout } = useAuth();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        const isScrolled = window.scrollY > 20;
+        setScrolled((prev) => (prev === isScrolled ? prev : isScrolled));
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

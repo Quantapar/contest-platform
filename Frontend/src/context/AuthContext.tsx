@@ -2,7 +2,9 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
+  useCallback,
   type ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
@@ -58,20 +60,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth();
   }, []);
 
-  const login = (token: string, userData: User) => {
+  const login = useCallback((token: string, userData: User) => {
     localStorage.setItem("token", token);
     setUser({ ...userData, token });
     navigate("/dashboard");
-  };
+  }, [navigate]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("token");
     setUser(null);
     navigate("/");
-  };
+  }, [navigate]);
+
+  const value = useMemo(
+    () => ({ user, login, logout, isLoading }),
+    [user, login, logout, isLoading],
+  );
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

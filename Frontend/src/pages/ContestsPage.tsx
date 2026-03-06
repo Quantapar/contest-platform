@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE_URL } from "../config";
@@ -55,6 +55,30 @@ export function ContestsPage() {
     }
   }, [user]);
 
+  const { liveContests, upcomingContests, pastContests } = useMemo(() => {
+    const now = Date.now();
+    const grouped = {
+      liveContests: [] as Contest[],
+      upcomingContests: [] as Contest[],
+      pastContests: [] as Contest[],
+    };
+
+    for (const contest of contests) {
+      const start = new Date(contest.startTime).getTime();
+      const end = new Date(contest.endTime).getTime();
+
+      if (now >= start && now <= end) {
+        grouped.liveContests.push(contest);
+      } else if (now < start) {
+        grouped.upcomingContests.push(contest);
+      } else {
+        grouped.pastContests.push(contest);
+      }
+    }
+
+    return grouped;
+  }, [contests]);
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -62,24 +86,6 @@ export function ContestsPage() {
       </div>
     );
   }
-
-  const now = new Date();
-
-  const liveContests = contests.filter((c) => {
-    const start = new Date(c.startTime);
-    const end = new Date(c.endTime);
-    return now >= start && now <= end;
-  });
-
-  const upcomingContests = contests.filter((c) => {
-    const start = new Date(c.startTime);
-    return now < start;
-  });
-
-  const pastContests = contests.filter((c) => {
-    const end = new Date(c.endTime);
-    return now > end;
-  });
 
   const ContestCard = ({
     contest,
