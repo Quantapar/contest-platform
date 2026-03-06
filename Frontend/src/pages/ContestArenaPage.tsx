@@ -304,11 +304,18 @@ export function ContestArenaPage() {
         <div className="flex-1 overflow-y-auto flex flex-col">
           <div className="p-8 max-w-4xl mx-auto w-full">
             <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-6">
-                {currentProblem?.title}
-              </h2>
+              {!currentProblem ? (
+                <div className="border border-border bg-card p-8 rounded-2xl text-center space-y-3">
+                  <h2 className="text-2xl font-bold">No problems available</h2>
+                  <p className="text-muted-foreground">
+                    This contest is live, but questions are not available yet.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold mb-6">{currentProblem.title}</h2>
 
-              {currentProblem?.type === "mcq" ? (
+                  {currentProblem.type === "mcq" ? (
                 <div className="space-y-4">
                   {(currentProblem.data.options as string[]).map(
                     (option, idx) => (
@@ -365,7 +372,7 @@ export function ContestArenaPage() {
                     </Button>
                   </div>
                 </div>
-              ) : (
+                  ) : (
                 <div className="space-y-6">
                   <div className="bg-muted p-6 rounded-2xl border border-border">
                     <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
@@ -504,6 +511,8 @@ export function ContestArenaPage() {
                     </Button>
                   </div>
                 </div>
+                  )}
+                </>
               )}
             </div>
           </div>
