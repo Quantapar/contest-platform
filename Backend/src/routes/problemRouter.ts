@@ -6,6 +6,19 @@ import { submitDsaSchema } from "../validator/contestsValidator";
 import { languageList } from "../lib/judge0Setup";
 import type { Judge0PollResponse } from "../types/judge0Types";
 
+const JUDGE0_STATUS = {
+  IN_QUEUE: 1,
+  PROCESSING: 2,
+  ACCEPTED: 3,
+  WRONG_ANSWER: 4,
+  TIME_LIMIT_EXCEEDED: 5,
+  COMPILATION_ERROR: 6,
+  RUNTIME_ERROR_MIN: 7,
+  RUNTIME_ERROR_MAX: 12,
+  INTERNAL_ERROR: 13,
+  EXEC_FORMAT_ERROR: 14,
+} as const;
+
 problemRouter.get("/:problemId", tokenValidation, async (req, res) => {
   try {
     const problemId = Number(req.params.problemId);
@@ -114,7 +127,7 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
       language_id: languageId,
       source_code: Buffer.from(code).toString("base64"),
       stdin: Buffer.from(tc.input).toString("base64"),
-      expected_output: Buffer.from(tc.expectedOutput.trim() + "\n").toString(
+      expected_output: Buffer.from(tc.expectedOutput.trimEnd()).toString(
         "base64",
       ),
     }));
@@ -181,7 +194,9 @@ problemRouter.post("/:problemId/submit", tokenValidation, async (req, res) => {
       success: false,
       data: null,
       error:
-        err instanceof Error ? err.message : String(err) || "INTERNAL_SERVER_ERROR",
+        err instanceof Error
+          ? err.message
+          : String(err) || "INTERNAL_SERVER_ERROR",
     });
   }
 });
@@ -225,13 +240,15 @@ problemRouter.get(
       for (let i = 0; i < tokens.length; i += batchSize) {
         const chunk = tokens.slice(i, i + batchSize);
         const pollRes = await fetch(
-          `${process.env.JUDGE0_API}/submissions/batch?tokens=${chunk.join(",")}&base64_encoded=true&fields=token,stdout,expected_output,status`,
+          `${process.env.JUDGE0_API}/submissions/batch?tokens=${chunk.join(",")}&base64_encoded=true&fields=token,stdout,expected_output,status,stderr,compile_output,message`,
         );
 
         if (!pollRes.ok) {
           const errorBody = await pollRes.text();
           console.error("Judge0 poll error:", pollRes.status, errorBody);
-          throw new Error(`Judge0 poll error (${pollRes.status}): ${errorBody}`);
+          throw new Error(
+            `Judge0 poll error (${pollRes.status}): ${errorBody}`,
+          );
         }
 
         const pollData = (await pollRes.json()) as Judge0PollResponse;
@@ -239,7 +256,9 @@ problemRouter.get(
       }
 
       const stillRunning = results.some(
-        (r: any) => r.status.id === 1 || r.status.id === 2,
+        (r: any) =>
+          r.status.id === JUDGE0_STATUS.IN_QUEUE ||
+          r.status.id === JUDGE0_STATUS.PROCESSING,
       );
 
       if (stillRunning) {
@@ -251,17 +270,28 @@ problemRouter.get(
       }
 
       const total = results.length;
-      const passed = results.filter((r: any) => r.status.id === 3).length;
+      const passed = results.filter(
+        (r: any) => r.status.id === JUDGE0_STATUS.ACCEPTED,
+      ).length;
 
       // Debug logging for failures
       results.forEach((r: any) => {
-        if (r.status.id === 4) { // Wrong Answer
+        if (r.status.id === JUDGE0_STATUS.WRONG_ANSWER) {
+          // Wrong Answer
           try {
-            const stdout = r.stdout ? Buffer.from(r.stdout, 'base64').toString() : "(null)";
-            const expected = r.expected_output ? Buffer.from(r.expected_output, 'base64').toString() : "(null)";
+            const stdout = r.stdout
+              ? Buffer.from(r.stdout, "base64").toString()
+              : "(null)";
+            const expected = r.expected_output
+              ? Buffer.from(r.expected_output, "base64").toString()
+              : "(null)";
             console.log(`[DEBUG] WA Detail - Token: ${r.token}`);
-            console.log(`Expected (len=${expected.length}): ${JSON.stringify(expected)}`);
-            console.log(`Actual   (len=${stdout.length}): ${JSON.stringify(stdout)}`);
+            console.log(
+              `Expected (len=${expected.length}): ${JSON.stringify(expected)}`,
+            );
+            console.log(
+              `Actual   (len=${stdout.length}): ${JSON.stringify(stdout)}`,
+            );
           } catch (e) {
             console.error("Error decoding debug info", e);
           }
@@ -269,9 +299,33 @@ problemRouter.get(
       });
 
       let status = "wrong_answer";
-      if (results.some((r: any) => r.status.id === 6)) {
+      if (
+        results.some(
+          (r: any) =>
+            r.status.id === JUDGE0_STATUS.INTERNAL_ERROR ||
+            r.status.id === JUDGE0_STATUS.EXEC_FORMAT_ERROR,
+        )
+      ) {
+        status = "judge_error";
+      } else if (
+        results.some(
+          (r: any) => r.status.id === JUDGE0_STATUS.COMPILATION_ERROR,
+        )
+      ) {
+        status = "compilation_error";
+      } else if (
+        results.some(
+          (r: any) =>
+            r.status.id >= JUDGE0_STATUS.RUNTIME_ERROR_MIN &&
+            r.status.id <= JUDGE0_STATUS.RUNTIME_ERROR_MAX,
+        )
+      ) {
         status = "runtime_error";
-      } else if (results.some((r: any) => r.status.id === 5)) {
+      } else if (
+        results.some(
+          (r: any) => r.status.id === JUDGE0_STATUS.TIME_LIMIT_EXCEEDED,
+        )
+      ) {
         status = "time_limit_exceeded";
       } else if (passed === total) {
         status = "accepted";
