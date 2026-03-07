@@ -3,16 +3,13 @@
   "module": "src/index.ts",
   "type": "module",
   "private": true,
-  "scripts": {
-    "build": "prisma generate && tsc --noEmit",
-    "start": "bun run src/index.ts",
-    "dev": "bun --watch src/index.ts"
-  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/cors": "^2.8.19",
     "@types/pg": "^8.16.0",
-    "prisma": "^7.3.0",
+    "prisma": "^7.3.0"
+  },
+  "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
